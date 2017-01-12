@@ -1,4 +1,4 @@
-Ongoing Project: A Morphological Analyzer for Kannada, an agglutinative language spoken in Karnataka, India. The Analyzer was built using Natural Language Processing Techniques,
+Ongoing Project: A Morphological Analyzer for Kannada, an agglutinative language spoken in Karnataka, India. The Analyzer was built using Natural Language Processing Techniques.
 
 The file 'load' was used to integrate data from various files.
 The file 'load_data' was used to remove the unnecessary data and to store it in the right format.
