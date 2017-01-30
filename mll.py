@@ -4,75 +4,49 @@ Created on Thu Jan 05 04:45:57 2017
 
 @author: Sachi Angle
 """
-from string import ascii_lowercase
+
 import numpy as np 
 import pandas as pd
+import matplotlib.pyplot as plt
+#import matplotlib.mlab as mlab
+#import seaborn as sb
 
-cv = np.zeros(27)
-vowel = ['a', 'e', 'i', 'o', 'u']
-for i, c in enumerate(ascii_lowercase):
-    if c in vowel:
-        cv[i + 1] = 1
+d = pd.read_csv('D:\Projects\NLP\data\\data_io_fin.csv')
+all_inputs = d[['curr_letter_id','vowel_id', 'prefix_word_id']].values
+all_classes = d['segment'].values
+
+from sklearn.cross_validation import train_test_split
+from sklearn.svm import SVC
+svc = SVC()
+
+"""(training_inputs, testing_inputs, training_classes, testing_classes) = train_test_split(all_inputs, all_classes, train_size=0.75, random_state=1)       
     
-wa = []
-wn = []
-for i, c in enumerate(ascii_lowercase):
-    wa.append(c)
-    wn.append(i + 1)
-word_id_alph = dict(zip(wa, wn))
 
-data = pd.read_csv('D:\Projects\NLP\data\\data_io.csv')
-data = data.drop('Unnamed: 0', 1)
 
-unmatch = []       
-for i in range(len(data)):   
-    cc = 0    
-    for ch in data.loc[i]['label']:
-        if ch == ' ':            
-            cc = cc + 1
-    cc = cc + 1    
-    if cc != len(data.loc[i]['in']):       
-        unmatch.append(i)
 
-segmented = [j for i, j in enumerate(data['label']) if i not in (unmatch)]
-inpt = [j for i, j in enumerate(data['in']) if i not in (unmatch)]
+svc.fit(training_inputs, training_classes)
+sc = svc.score(testing_inputs, testing_classes)
 
-curr_segment = []
-root = []
-prefix_seg = []
-prefix_word = []
+"""
+model_accuracies = []
+for i in range(10):
+    (training_inputs, testing_inputs, training_classes, testing_classes) = train_test_split(all_inputs, all_classes, train_size=0.75)
+    svc.fit(training_inputs, training_classes)
+    sc = svc.score(testing_inputs, testing_classes)
+    model_accuracies.append(sc)
 
-for word in segmented:
-    s = ""
-    sp = ""
-    r = 1
-    for char in word:
-        if char == ' ':
-            curr_segment.append(s)
-            root.append(r)
-            prefix_seg.append(sp[:-len(s)])
-            if s[-1] == '*':
-                r = 0
-            s = ""
-        else:
-            s += char
-            sp += char
-    curr_segment.append(s)
-    root.append(r)
-    prefix_seg.append(sp[:-len(s)])
-    
-for word in inpt:
-    s = ""
-    for char in word:
-        prefix_word.append(s)
-        s += char
-        
-from sklearn.feature_extraction.text import CountVectorizer
-        
-vect = CountVectorizer(min_df=1)
-    
-    
-    
+#sb.distplot(model_accuracies)
+#n, bins, patches = plt.hist(model_accuracies, 50, normed=1, facecolor='green', alpha=0.75)
+
+from sklearn.cross_validation import cross_val_score
+
+cv_scores = cross_val_score(svc, all_inputs, all_classes, cv = 10)
+#n, bins, patches = plt.hist(cv_scores, 50, normed=1, facecolor='green', alpha=0.75)
+#sb.distplot(cv_scores)
+#plt.title('Average score: {}'.format(np.mean(cv_scores))) 
+
+
+
     
     
     
