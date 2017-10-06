@@ -5,4 +5,5 @@ The file 'load_data' was used to remove the unnecessary data and to store it in 
 The file 'dataclean'was used to clean the data and remove unnecessary and incomplete data.
 The file 'wxx' was used to convert the unicode data in kannada script into wx - format, ie, romanize it.
 The file 'preprocessing' was used to preprocess and segment the data to get it into a form that can be used for machine learning.
-The file 'mll' contains the code to be used for machine learning.
+The file 'pre_fin' is used for featre engineering.
+The file 'mll' builds and runs the SVM model.
