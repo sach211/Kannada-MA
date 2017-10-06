@@ -7,7 +7,7 @@ Created on Sun Oct 30 13:19:19 2016
 
 import pandas as pd
 
-data = pd.read_csv('D:\Projects\NLP\data\\final_data.csv')
+data = pd.read_csv('/home/sachi/Documents/NLP/data/Fin/final_data.csv')
 data = data.drop('Unnamed: 0', 1)
 
 for i in range(len(data)):
@@ -25,5 +25,5 @@ for i in range(len(data["suff-wx"])):
 data_spare = data.loc[n][:]
 data = data.loc[y][:]
 
-data.to_csv('D:\Projects\NLP\data\data_1.csv')
-data_spare.to_csv('D:\Projects\NLP\data\data_2.csv')
+data.to_csv('/home/sachi/Documents/NLP/data/Fin/data_1.csv')
+data_spare.to_csv('/home/sachi/Documents/NLP/data/Fin/data_2.csv')
