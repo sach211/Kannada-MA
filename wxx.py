@@ -8,7 +8,7 @@ Created on Sun Dec 04 01:30:17 2016
 def utf2wx(inpchar):
 
 ##    import codecs
-    f1=open('D:\Projects\NLP\NLP_PyScripts\unikannada.txt','r');
+    f1=open('/home/sachi/Documents/NLP/NLP_PyScripts/unikannada.txt','r');
     unichar=f1.read();
     unichardecode = unichar.decode('utf-8');
     unicharinp = unichardecode[1:len(unichardecode)];
@@ -19,7 +19,7 @@ def utf2wx(inpchar):
         myunicodetable.append(mylist);
     f1.close();
 
-    f2=open('D:\Projects\NLP\NLP_PyScripts\wxkannada.txt','r');
+    f2=open('/home/sachi/Documents/NLP/NLP_PyScripts/wxkannada.txt','r');
     wxchar=f2.read();
     wxcharinp = wxchar[0:len(wxchar)];
     wxline=wxcharinp.splitlines();
@@ -78,27 +78,23 @@ def utf2wx(inpchar):
 
 
 
-
 import pandas as pd
 
-data = pd.read_csv('D:\Projects\NLP\data\\data_1.csv')
+data = pd.read_csv('/home/sachi/Documents/NLP/data/Fin/data_1.csv')
 data = data.drop('Unnamed: 0', 1)
+data = data[['root', 'suffixes', 'suff-wx', 'word', 'noun', 'sg/pl', 'd/o']]
 
 wxr = []
 wxw = []
 for i in data["root"]:
     wxc = utf2wx(str(i))
-    if wxc == 'nan':
-        wxc = '0'
     wxr.append(wxc)
     
 for i in data["word"]:
     wxc = utf2wx(str(i))
-    if wxc == 'nan':
-        wxc = '0'
     wxw.append(wxc)
     
 data['wx_root'] = wxr
 data['wx_word'] = wxw
 
-data.to_csv('D:\\Projects\\NLP\\data\\data_almost.csv', encoding = 'utf-8')
+data.to_csv('/home/sachi/Documents/NLP/data/Fin/data_almost.csv', encoding = 'utf-8')
