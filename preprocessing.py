@@ -4,14 +4,15 @@ Created on Wed Dec 14 14:57:55 2016
 
 @author: Sachi Angle
 """
-
-uni_err = [46026, 62386, 66648, 70518, 72465, 73701, 79632, 85228, 86319, 86367]
-
 import numpy as np
 import pandas as pd
 
-data = pd.read_csv('D:\Projects\NLP\data\\data_almost.csv')
+data = pd.read_csv('/home/sachi/Documents/NLP/data/Fin/data_almost.csv')
 data = data.drop('Unnamed: 0', 1)
+data = data[['wx_word', 'wx_root', 'suff-wx', 'noun', 'sg/pl', 'd/o']]
+
+for col in data.columns:
+    data[col].loc[data[col].isnull()] = '0'
 
 root = []
 for word in data['wx_root']:
@@ -211,18 +212,11 @@ def align2(t, word, s, i, j, f):
             return 0
         else:
             if len(t) > 1 and t[-2] != '*':
-                t = t[:-1]
-                while j < len(s) and word[i] != s[j]:
-                    t += s[j]
-                    j += 1
-                t += ' '
-                return align2(t, word, s, i, j, f) 
+                t = t[:-1]        
+                t += s[j] + ' '
             else:
-                while j < len(s) and word[i] != s[j]:
-                    t += s[j]
-                    j += 1
-                return align2(t, word, s, i, j, f) 
-                
+                t += s[j]
+            return align2(t, word, s, i, j + 1, f)            
             
 err_list = []
 E = []
@@ -231,7 +225,7 @@ for k in range(len(data["wx_root"])):
     s = ""
     s = root[k]
     if '0' != suff[k]:
-        s += "*" + suff[k].replace('+', '*')
+        s += "*" + suff[k]
     t = ""
     word = str(data.loc[k]["wx_word"])
     split(word)
@@ -240,6 +234,8 @@ for k in range(len(data["wx_root"])):
         words = words[:-1]
         err_list.append(k)
     elif flag is 0:
+        #E.append(k)
+        #words = words[:-1]
         t = ""
         flag2 = align2(t, word, s, 0, 0, 0)
         if flag2 == 0:
@@ -248,34 +244,29 @@ for k in range(len(data["wx_root"])):
         elif flag2 == 5:
             words = words[:-1]
             err_list.append(k)
-               
+        
+          
 words = pd.DataFrame(words)
+uni_err = [47041, 66340, 67573, 68390, 72151, 72384, 73693, 75379, 82985, 87253, 87301, 88647]
 
 segmented = [j for i, j in enumerate(segmented) if i not in (uni_err)]
 inpt = [j for i, j in enumerate(data["wx_word"]) if i not in (E + err_list)]
 inpt = [j for i, j in enumerate(inpt) if i not in (uni_err)]
-
 inp = []
 for i in range(len(inpt)):
     s = ""
     for c in inpt[i]:
         s = s + c + " "
+    s = s[:-1]
     inp.append(s)
-io = pd.DataFrame({'in' : inpt, 'label' : segmented}, columns=['in','label'])
+    
+noun = [j for i, j in enumerate(data["noun"]) if i not in (E + err_list)]
+noun = [j for i, j in enumerate(noun) if i not in (uni_err)]
+sg_pl = [j for i, j in enumerate(data["sg/pl"]) if i not in (E + err_list)]
+sg_pl = [j for i, j in enumerate(sg_pl) if i not in (uni_err)]
+d_o = [j for i, j in enumerate(data["d/o"]) if i not in (E + err_list)]
+d_o = [j for i, j in enumerate(d_o) if i not in (uni_err)]
 
-io.to_csv('D:\\Projects\\NLP\\data\\data_io.csv', encoding = 'utf-8')
+io = pd.DataFrame({'in' : inpt, 'label' : segmented, 'noun' : noun, 'sg_pl' : sg_pl, 'd_o' : d_o}, columns=['in','label', 'noun', 'sg_pl', 'd_o'])
 
-dr = [j for i, j in enumerate(data["wx_root"]) if i not in (E + err_list)]
-dr = [j for i, j in enumerate(dr) if i not in (uni_err)]
-ds = [j for i, j in enumerate(data["suff-wx"]) if i not in (E + err_list)]
-ds = [j for i, j in enumerate(ds) if i not in (uni_err)]
-
-unmatch = []       
-for i in range(len(segmented)):   
-    cc = 0    
-    for ch in segmented[i]:
-        if ch == ' ':            
-            cc = cc + 1
-    cc = cc + 1    
-    if cc != len(inpt[i]):       
-        unmatch.append(i)
+io.to_csv('/home/sachi/Documents/NLP/data/Fin/data_io.csv', encoding = 'utf-8')
